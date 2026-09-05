@@ -114,13 +114,9 @@ impl Page {
     fn wordmark(&self) -> Markup {
         html! {
             a class="wordmark" href="/" aria-label="Battlesnake Arena — home" {
-                svg class="glyph" viewBox="0 0 24 24" fill="none" aria-hidden="true" {
-                    rect x="2" y="2" width="9" height="9" rx="2.5" fill="var(--pink)" {}
-                    rect x="13" y="2" width="9" height="9" rx="2.5" fill="currentColor" opacity=".2" {}
-                    rect x="2" y="13" width="9" height="9" rx="2.5" fill="currentColor" opacity=".2" {}
-                    rect x="13" y="13" width="9" height="9" rx="2.5" fill="var(--pink)" opacity=".45" {}
-                }
+                img class="logo-mark" src=(asset_url("mauadev-logo.svg")) width="28" height="28" alt="Dev Community Mauá";
                 span class="wordmark-text" { "Battlesnake" }
+                span class="event-tag" { "Arena · Mauá Dev" }
             }
         }
     }
@@ -225,6 +221,7 @@ impl Page {
             footer class="site-footer" {
                 div class="inner" {
                     span { "Battlesnake Arena" }
+                    span class="credit" { "hosted by Dev Community Mauá" }
                     div class="spacer" {}
                     a href="/conduct" { "Code of Conduct" }
                     a href="/privacy" { "Privacy Policy" }
@@ -268,10 +265,11 @@ impl Render for Page {
                     link rel="preconnect" href="https://fonts.gstatic.com" crossorigin;
                     link href=(GOOGLE_FONTS_HREF) rel="stylesheet";
                     link rel="stylesheet" href=(asset_url("arena.css"));
-                    link rel="icon" href=(asset_url("favicon.svg")) type="image/svg+xml";
+                    link rel="icon" href=(asset_url("mauadev-logo.svg")) type="image/svg+xml";
                     script { (PreEscaped(THEME_BOOTSTRAP_JS)) }
                     script src=(asset_url("viewTransition.js")) {}
                     script src=(asset_url("theme.js")) defer {}
+                    script src=(asset_url("interactions.js")) defer {}
                 }
 
                 body {

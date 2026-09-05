@@ -1,241 +1,177 @@
-# Battlesnake Arena
+# Battlesnake Arena × Mauá Dev — reskin
 
-The platform behind [arena.battlesnake.com](https://arena.battlesnake.com) — a competitive
-programming game where your web server is the player. Write a server that speaks the
-[Battlesnake API](https://docs.battlesnake.com), register it, and the arena runs ranked
-games around the clock: automated leaderboards, tournaments with live brackets, and a
-game theater for watching matches — even while you sleep.
+Overhaul visual da [BattlesnakeOfficial/arena](https://github.com/BattlesnakeOfficial/arena)
+pra rodar como a arena do Battlesnake da Mauá Dev. Mantém a estrutura e a
+"personalidade editorial" que o site já tinha (papel claro, hairlines, dados
+em mono) — só troca a paleta pink por azul marinho + vermelho, cabeia o logo,
+e adiciona uma camada pequena de interatividade.
 
-Arena is the Rust rewrite of play.battlesnake.com: an Axum monolith with server-rendered
-Maud templates, PostgreSQL, and a built-in game engine that simulates matches by calling
-each snake's `/move` endpoint in parallel.
+Isso **não é o site rodando** — é o patch pra aplicar no seu fork do
+`arena/` (submódulo), mais um preview estático (`preview.html`) pra você ver
+o resultado sem precisar compilar nada.
 
-## Screenshots
+---
 
-Taken from the live site on a schedule by the [Screenshots workflow](.github/workflows/screenshots.yml)
-and pushed to the [`screenshots` branch](https://github.com/BattlesnakeOfficial/arena/tree/screenshots).
+## 1. O que mudou, em uma imagem
 
-| Home | Leaderboard |
-| --- | --- |
-| ![Home page](https://raw.githubusercontent.com/BattlesnakeOfficial/arena/screenshots/screenshots/home-light.png) | ![Leaderboard detail](https://raw.githubusercontent.com/BattlesnakeOfficial/arena/screenshots/screenshots/leaderboard-detail.png) |
+Abre o `preview.html` no navegador. Ele usa o `arena.css` e o
+`interactions.js` reais deste patch — o que você vê ali é exatamente o que
+vai renderizar depois de aplicado, com fonte do Google Fonts carregando
+normalmente (só não carrega aqui no meu sandbox, que não tem acesso à
+internet). Tem um botão "Alternar tema" no topo pra ver claro/escuro.
 
-| Tournaments | Customizations |
-| --- | --- |
-| ![Tournaments](https://raw.githubusercontent.com/BattlesnakeOfficial/arena/screenshots/screenshots/tournaments.png) | ![Customizations](https://raw.githubusercontent.com/BattlesnakeOfficial/arena/screenshots/screenshots/customizations.png) |
+## 2. Sistema de cores
 
-<details>
-<summary>More: dark theme, mobile, game theater</summary>
+Antes era **uma cor só** (`--pink`) fazendo tudo — nav, botões, foco, "ao
+vivo", erro. Isso não dava pra manter com "foco em azul marinho e um pouco
+de vermelho", então virou duas famílias de token com papéis bem definidos:
 
-| Dark theme | Game theater |
-| --- | --- |
-| ![Home in dark theme](https://raw.githubusercontent.com/BattlesnakeOfficial/arena/screenshots/screenshots/home-dark.png) | ![Game theater](https://raw.githubusercontent.com/BattlesnakeOfficial/arena/screenshots/screenshots/game-theater.png) |
+| Token | Papel | Usa em |
+|---|---|---|
+| `--accent` (azul) | **cor dominante** — é a marca | nav ativo, botões, links, foco, borda de card, kicker, rank/1º lugar, vitória em bracket |
+| `--red` | **reservado** — só pra "acontecendo agora" ou "deu errado" | live-dot, badge "Live", pílula de rodada, partida ao vivo no bracket, erro de formulário, "ganhou" no ticker |
 
-<img src="https://raw.githubusercontent.com/BattlesnakeOfficial/arena/screenshots/screenshots/home-mobile.png" alt="Home on mobile" width="375">
+Vermelho nunca virou decoração solta — cada uso dele responde "isso é
+urgente, ao vivo, ou está errado" olhando pro componente. Isso também
+resolve uma ambiguidade que a paleta antiga tinha: agora dá pra saber, só
+pela cor, se algo é "seu melhor resultado" (azul) ou "está rolando agora"
+(vermelho).
 
-</details>
+### Valores exatos
 
-## What's in the box
+Toda a paleta foi gerada com uma rampa HSL consistente (mesmo matiz de navy
+em `--paper`/`--card`/`--hairline`, variando só a luminância) e cada par
+texto/fundo foi conferido contra WCAG AA — nenhum ficou abaixo de 4.5:1.
 
-- **Ranked leaderboards** — register a snake, and the matchmaker starts games every few
-  minutes. Ratings use Weng-Lin (OpenSkill), not Elo; displayed rating is `μ − 3σ`.
-- **Tournaments** — single-elimination brackets with seeding, best-of-N matches, live
-  round tracking, and a champion's trophy.
-- **Game engine** — Rust rules crate simulating Standard games on 7x7 / 11x11 / 19x19
-  boards, persisting every turn as a JSONB frame and streaming to viewers over WebSockets.
-- **Game theater** — games render in the board viewer with a two-axis theme system: the
-  site theme (system / light / dark) and an independent theater preference.
-- **Customizations** — snake heads and tails, including partner and community art, with
-  per-account unlocks.
-- **Play migration** — players from the old play.battlesnake.com can claim their accounts
-  by password or email recovery, bringing snakes and unlocks with them.
-- **API + CLI** — token-authenticated REST API for snakes, games, and leaderboards
-  (used by `arena-cli`).
+```css
+/* claro */
+--paper: #F5F7FB;   --ink: #111A2F;      --muted: #586584;
+--hairline: #DBE1ED; --hairline-dark: #C5CDE0;
+--accent: #185AC3;  --accent-deep: #0F4295; --accent-wash: #EBF2FC;
+--red: #C81E29;     --red-deep: #9A131C;    --red-wash: #FDEDEE;
 
-## Setup
-
-### Prerequisites
-
-- Rust (stable, via [rustup](https://rustup.rs))
-- PostgreSQL 14 or later
-- `cargo install sqlx-cli` for database commands
-
-### Environment Variables
-
-Create a `.envrc` file in the root directory with the following environment variables:
-
-```
-export DATABASE_URL="postgresql://localhost:5432/arena"
-export GITHUB_CLIENT_ID="your_github_client_id"
-export GITHUB_CLIENT_SECRET="your_github_client_secret"
-export GITHUB_REDIRECT_URI="http://localhost:3000/auth/github/callback"
+/* escuro — data-app-theme="dark" */
+--paper: #0A0F1C;   --ink: #E9EEF9;      --muted: #8D9DC4;
+--hairline: #202E4E; --hairline-dark: #2D3E64;
+--accent: #4D91FF;  --accent-deep: #85B4FF;
+--red: #FF4D58;      --red-deep: #FF858D;
 ```
 
-If you're using [direnv](https://direnv.net/), run `direnv allow` to load these environment variables.
+`--up`/`--down` (delta de rating, verde/vermelho-tijolo) ficaram como
+estavam — são semânticos, não têm relação com a marca.
 
-#### Optional: Eyes telemetry
+De onde veio o azul e o vermelho: **não inventei**. Puxei do
+`logo_dev.png`/`logo_dev_white.png` (blue `#1182D0` → red `#EE0A10` no
+gradiente do chevron), do `novo_repositorio_portal_interno_front` (accent
+`#4562B3`/`#B34444` no tema escuro) e do `clean_front_next_template`
+(botão primário `#1145AA`/`#0D3A8B`). A paleta final é uma versão refinada
+(contraste + consistência de matiz) desses valores reais, não um
+azul-e-vermelho genérico.
 
-Setting **both** `EYES_ORG_ID` and `EYES_APP_ID` to valid UUIDs turns on the
-[Eyes](https://eyes.coreyja.com) tracing layer, which streams spans and events
-alongside the normal log output. Leaving either unset (or empty) simply runs
-without it — the default for local development. Setting only one logs a note
-and stays off; setting an ID that isn't a UUID is a hard startup error, so a
-typo can't silently drop telemetry.
+### O único gradiente do site
 
-`EYES_URL` overrides the ingest endpoint and defaults to
-`https://eyes.coreyja.com`. In production these are set on the Cloud Run
-service by the deploy workflow from the `EYES_ORG_ID` / `EYES_APP_ID` repo
-secrets.
+O board decorativo da hero agora tem **duas cobras**: uma azul, uma
+vermelha — literalmente as duas cores da marca disputando o tabuleiro, o
+que faz sentido tanto pro "arena" quanto pro chevron do logo. A comida virou
+dourada, pra não competir com nenhum dos dois times.
 
-### Creating a GitHub App
+O único outro lugar com gradiente é o card de **campeão coroado** no
+bracket (borda azul→vermelho, 135deg) — reservado pro momento mais alto do
+torneio, não reaproveitado em mais nada.
 
-Sign-in is GitHub OAuth only, so local development needs an app:
+## 3. Arquivos deste patch
 
-1. Go to [GitHub Developer Settings](https://github.com/settings/developers)
-2. Click on "New GitHub App"
-3. Fill in the required fields:
-   - **GitHub App name**: Arena (or any name you prefer)
-   - **Homepage URL**: http://localhost:3000
-   - **Callback URL**: http://localhost:3000/auth/github/callback
-   - **Permissions**: User permissions → read access to email addresses and profile information
-   - **Where can this GitHub App be installed?**: Any account
-4. Click "Create GitHub App"
-5. On the next page, note your **Client ID**
-6. Generate a client secret by clicking "Generate a new client secret"
-7. Update your `.envrc` file with the new credentials
+```
+patch/server/static/arena.css              retema completo + animações novas
+patch/server/static/interactions.js         NOVO — scroll-reveal + contador
+patch/server/static/mauadev-logo.svg        NOVO — placeholder do logo (troque pelo real)
+patch/server/src/components/page.rs         logo no wordmark, favicon, footer, <script> novo
+patch/server/src/routes.rs                  board decorativo azul×vermelho, data-reveal na home
+patch/server/src/routes/leaderboard.rs      accent em vez de pink, contador na stat band
+patch/server/src/routes/tournament.rs       cor do ícone play do theater-strip
+```
 
-### Database Setup
+### Aplicar no seu fork
 
 ```bash
-cargo sqlx db create
-cargo sqlx migrate run
+# dentro do devcommunity_battlesnake_arena, com o submodule já apontando
+# pro seu fork de BattlesnakeOfficial/arena
+cp -r patch/server/static/* arena/server/static/
+cp patch/server/src/components/page.rs   arena/server/src/components/page.rs
+cp patch/server/src/routes.rs             arena/server/src/routes.rs
+cp patch/server/src/routes/leaderboard.rs arena/server/src/routes/leaderboard.rs
+cp patch/server/src/routes/tournament.rs  arena/server/src/routes/tournament.rs
+
+cd arena
+cargo fmt
+cargo check    # não toquei em nenhuma query SQL — o cache .sqlx existente continua válido
+cargo clippy
+cargo test
 ```
 
-### Running the Application
+Não rodei `cargo build` aqui (sem toolchain Rust no meu ambiente, e o
+projeto puxa bastante dependência — sentry, opentelemetry, sqlx). Toda
+edição em Rust foi só markup/atributo/cor (nada de lógica nova), e chequei
+manualmente chaves balanceadas em cada arquivo, mas vale rodar
+`cargo check` antes de dar merge.
+
+### Ver rodando de verdade
+
+Pelo fluxo que vocês já usam (`README.md` da raiz):
 
 ```bash
-cargo run
+git submodule update --init --recursive
+cd deploy
+cp .env.example .env
+# BASE_URL=http://localhost, DOMAIN_NAME=localhost, credenciais do GitHub App
+docker compose up -d --build
 ```
 
-The application will be available at http://localhost:3000
+Abre `http://localhost`. Primeiro build da imagem Rust demora alguns
+minutos.
 
-## Development
+## 4. Trocar o logo placeholder
 
-### Build/Lint/Test Commands
+O `mauadev-logo.svg` que mandei é só uma marca provisória (chevron com o
+mesmo gradiente azul→vermelho, mas abstrata — não tentei recriar o logo
+real a partir da amostra que vi em outro repo). Pra trocar:
 
-- Build: `cargo build`
-- Run: `cargo run`
-- Check: `cargo check`
-- Lint: `cargo clippy`
-- Fix auto-correctable lints: `cargo clippy --fix`
-- Format: `cargo fmt`
-- Test: `cargo test`
+1. Substitua **o arquivo `patch/server/static/mauadev-logo.svg` pelo logo
+   real, mantendo esse exato nome** (`mauadev-logo.svg`). SVG é o ideal
+   (escala nítido em qualquer tela); PNG também funciona, mas aí troca a
+   extensão e o único `<img src=...>` em `components/page.rs::wordmark()`.
+2. Os assets em `server/static/` são embutidos no binário em tempo de
+   compilação (`include_dir!`) e servidos com hash de conteúdo
+   (`/static/arquivo?v=<hash>`) e cache de 1 ano — então trocar o arquivo
+   **exige rebuild** (não basta substituir o arquivo num servidor já
+   rodando). Isso também quer dizer que você não precisa se preocupar com
+   cache-busting manual: o hash muda sozinho quando o conteúdo muda.
+3. O elemento renderiza a 28px de altura (`width: auto`), então prefira um
+   arquivo com boa margem/respiro — não cole o logo colado nas bordas do
+   canvas.
 
-### Database Commands
+## 5. O que eu não toquei, e por quê
 
-- Create database: `cargo sqlx db create`
-- Drop database: `cargo sqlx db drop`
-- Run all migrations: `cargo sqlx migrate run`
-- Revert latest migration: `cargo sqlx mig revert`
-- Create new migration: `cargo sqlx migrate add --source migrations <migration_name>`
-- Recreate DB from scratch: `cargo sqlx db drop -y && cargo sqlx db create && cargo sqlx migrate run`
-- Update query cache: `DATABASE_URL="postgresql://localhost:5432/arena" cargo sqlx prepare --workspace -- --all-targets`
+- **Páginas "legacy" pré-redesign** (ex.: a página de detalhe/stats de uma
+  snake individual, que usa estilo inline tipo Bootstrap) — o próprio
+  `arena.css` já marca essas páginas como fora do redesign atual
+  (comentário "legacy classes (pre-redesign pages)"), então segui a mesma
+  fronteira que o time original desenhou.
+- **`routes/admin.rs`** — dashboard interno com estilo 100% inline, sem
+  nenhuma relação com `arena.css`. Não é algo que competidor/espectador vê,
+  então ficou fora do escopo.
+- **Lógica de negócio** — tudo que mudei foi cor, atributo, e um componente
+  decorativo (as duas cobras do board). Nenhuma query, rota, ou regra de
+  matchmaking/rating mudou.
 
-Note: Always ensure the DATABASE_URL environment variable is set when working with SQLx commands, especially for migration reversion: `DATABASE_URL="postgresql://localhost:5432/arena" cargo sqlx mig revert`
+## 6. Pra manter consistência daqui pra frente
 
-### E2E Testing
+Ao adicionar UI nova: azul (`--accent`) é o padrão pra qualquer coisa
+interativa ou de marca. Só usa `--red` se o componente responde "sim" pra
+"isso está ao vivo, acabou de acontecer, ou deu errado" — senão, é azul (ou
+nem tem cor nenhuma, só hairline/hover normais).
 
-End-to-end tests use Playwright and are located in the `e2e/` directory.
-
-#### Setup
-
-```bash
-cd e2e
-npm install
-npx playwright install chromium
-```
-
-#### Test Database
-
-E2E tests use a separate database (`arena_test`). Create it before running tests:
-
-```bash
-DATABASE_URL="postgresql://localhost:5432/arena_test" cargo sqlx db create
-DATABASE_URL="postgresql://localhost:5432/arena_test" cargo sqlx migrate run
-```
-
-#### Running Tests
-
-From the `e2e/` directory:
-
-```bash
-# Run tests headless (default)
-npm test
-
-# Run tests with browser visible
-npm run test:headed
-
-# Run tests in debug mode (step through)
-npm run test:debug
-
-# Run tests in UI mode (interactive)
-npm run test:ui
-```
-
-Note: Tests automatically start the server using `cargo run` with the test database. The first run may take longer due to compilation.
-
-### Live Screenshots
-
-The [Screenshots workflow](.github/workflows/screenshots.yml) runs weekly (and on demand
-via `workflow_dispatch`), captures the pages defined in [`live.shots.yml`](live.shots.yml)
-from the live site with [shot-scraper](https://github.com/simonw/shot-scraper), optimizes
-them with oxipng, and force-pushes a single commit to the `screenshots` branch (main is
-ruleset-protected, and PNG churn stays out of its history). Detail pages (leaderboard,
-game theater) are discovered from the live site at run time: leaderboard list → detail →
-first entry → a recent game, since those IDs aren't stable across seasons.
-
-### Spec-to-Code Tracing with Tracey
-
-This project uses [Tracey](https://github.com/bearcove/tracey) for spec-to-code tracing, linking technical specifications to both implementations and tests.
-
-#### Specifications
-
-Specifications are written in Markdown and located in `specs/web_app/`:
-
-- `auth.md` - Authentication (GitHub OAuth, sessions, logout)
-- `battlesnakes.md` - Battlesnake CRUD operations and validation
-- `games.md` - Game creation, listing, and viewing
-- `profiles.md` - User profiles and homepage
-
-Each spec uses the `r[rule.id]` syntax to define requirements, for example:
-```markdown
-r[auth.oauth.initiation]
-The system provides a `/auth/github` route that initiates the OAuth flow.
-```
-
-#### Markers
-
-- **Implementation markers** (`[impl rule.id]`) are placed in Rust source code doc comments
-- **Verification markers** (`[verify rule.id]`) are placed in E2E test comments
-
-#### Running Tracey Locally
-
-Install Tracey:
-```bash
-cargo install tracey
-```
-
-Run the report:
-```bash
-tracey --config .config/tracey/config.kdl
-```
-
-If Tracey is not installed, the CI workflow will still pass (with a warning) and report generation will be skipped.
-
-#### CI Integration
-
-Tracey runs automatically in CI on every push and pull request. The workflow:
-1. Installs Tracey if not cached
-2. Generates a coverage report
-3. Uploads the report as an artifact
-
-Note: The Tracey job is configured to not fail the build, it only generates reports.
+Quer contador animado em algum número novo? Só adiciona
+`data-count="1234"` no elemento — o `interactions.js` já cobre. Quer que
+algo apareça com fade ao rolar a página? `data-reveal` no elemento. Os dois
+respeitam `prefers-reduced-motion` automaticamente.

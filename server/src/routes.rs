@@ -515,7 +515,7 @@ async fn root_page(
 
                 @if user.is_none() {
                     section class="features" {
-                        div class="feature" {
+                        div class="feature" data-reveal {
                             div class="num" { "01" }
                             h2 { "Automated leaderboards" }
                             p {
@@ -525,7 +525,7 @@ async fn root_page(
                             }
                             a class="more" href="/leaderboards" { "See the rankings →" }
                         }
-                        div class="feature" {
+                        div class="feature" data-reveal {
                             div class="num" { "02" }
                             h2 { "Any language, any stack" }
                             p {
@@ -535,7 +535,7 @@ async fn root_page(
                             }
                             a class="more" href="https://docs.battlesnake.com" { "Read the docs →" }
                         }
-                        div class="feature" {
+                        div class="feature" data-reveal {
                             div class="num" { "03" }
                             h2 { "Tournaments & community" }
                             p {
@@ -570,11 +570,11 @@ async fn root_page(
     ))
 }
 
-/// Decorative 11×11 board for the logged-out hero. Intentionally dark-framed
-/// in both themes (hardcoded colors match the mockup's board panel).
+/// Decorative 11×11 board for the logged-out hero — Mauá Dev blue vs. red,
+/// intentionally dark-framed in both themes (hardcoded to match the panel).
 fn home_board() -> Markup {
     const N: usize = 11;
-    let pink: &[(usize, usize)] = &[
+    let blue: &[(usize, usize)] = &[
         (3, 2),
         (3, 3),
         (4, 3),
@@ -584,7 +584,7 @@ fn home_board() -> Markup {
         (5, 6),
         (5, 7),
     ];
-    let cream: &[(usize, usize)] = &[(8, 7), (8, 6), (7, 6), (7, 5), (7, 4), (8, 4), (9, 4)];
+    let red: &[(usize, usize)] = &[(8, 7), (8, 6), (7, 6), (7, 5), (7, 4), (8, 4), (9, 4)];
     let food: &[(usize, usize)] = &[(1, 1), (6, 2), (9, 9), (2, 8)];
 
     let mut cells: Vec<(&'static str, Option<String>)> = vec![("cell", None); N * N];
@@ -598,8 +598,8 @@ fn home_board() -> Markup {
             cells[y * N + x] = (class, Some(style));
         }
     };
-    draw_snake(pink, "#FF3D8A");
-    draw_snake(cream, "#F4EFEA");
+    draw_snake(blue, "#4D91FF");
+    draw_snake(red, "#FF4D58");
     for &(x, y) in food {
         cells[y * N + x] = ("cell food", None);
     }

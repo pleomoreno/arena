@@ -267,22 +267,22 @@ pub async fn show_leaderboard(
             }
 
             div class="stats" {
-                div class="stat" {
+                div class="stat" data-reveal {
                     div class="label" { "Ranked snakes" }
-                    div class="value" { (total_ranked) }
+                    div class="value" data-count=(total_ranked) { (total_ranked) }
                 }
-                div class="stat" {
+                div class="stat" data-reveal {
                     div class="label" { "Games played" }
-                    div class="value" { (status.total_games) }
+                    div class="value" data-count=(status.total_games) { (status.total_games) }
                 }
-                div class="stat" {
+                div class="stat" data-reveal {
                     div class="label" { "In progress" }
                     div class="value" {
                         span class="live" { (status.games_in_progress) }
                         small { "live now" }
                     }
                 }
-                div class="stat" {
+                div class="stat" data-reveal {
                     div class="label" { "Next matchmaker run" }
                     div class="value sm" {
                         @if enabled_count < leaderboard::MIN_MATCH_SIZE as i64 {
@@ -526,7 +526,7 @@ pub async fn show_leaderboard(
                             } @else if user_entries.is_empty() {
                                 p class="railp" {
                                     "Register a snake to join. "
-                                    a href="/battlesnakes/new" style="color:var(--pink)" { "Register one" }
+                                    a href="/battlesnakes/new" style="color:var(--accent)" { "Register one" }
                                 }
                             }
                         }

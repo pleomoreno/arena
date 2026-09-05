@@ -477,7 +477,7 @@ fn bracket_match_card(
             @if let Some(game) = live_game {
                 a class="theater-strip" href={"/games/"(game.game_id)} {
                     span class="play" {
-                        svg viewBox="0 0 8 8" fill="#1A0710" aria-hidden="true" {
+                        svg viewBox="0 0 8 8" fill="#160A0C" aria-hidden="true" {
                             path d="M0.5 0l7 4-7 4z" {}
                         }
                     }

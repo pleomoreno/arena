@@ -1,0 +1,18 @@
+<svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" fill="none" aria-hidden="true">
+  <!--
+    PLACEHOLDER MARK — replace this file with the real Dev Community Mauá
+    logo (same filename: mauadev-logo.svg) and the nav picks it up with no
+    code changes. Keep it roughly square with a bit of breathing room; the
+    nav renders it at a fixed 28px height, width auto. SVG preferred (scales
+    crisply on any screen); a PNG at ~120x120px also works if you swap the
+    extension and the one <img src> reference in components/page.rs.
+  -->
+  <defs>
+    <linearGradient id="mauadev-grad" x1="3" y1="6" x2="29" y2="6" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#1670C7" />
+      <stop offset="1" stop-color="#E8202D" />
+    </linearGradient>
+  </defs>
+  <path d="M3 6 L16 6 L29 6 L18 27 L14 27 Z" fill="url(#mauadev-grad)" opacity=".14" />
+  <path d="M3 6 L16 27 L29 6" stroke="url(#mauadev-grad)" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round" />
+</svg>
