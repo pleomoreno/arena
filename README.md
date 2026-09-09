@@ -1,7 +1,7 @@
-# Battlesnake Arena × Mauá Dev — reskin
+# Battlesnake Arena × DevCommunity — reskin
 
 Overhaul visual da [BattlesnakeOfficial/arena](https://github.com/BattlesnakeOfficial/arena)
-pra rodar como a arena do Battlesnake da Mauá Dev. Mantém a estrutura e a
+pra rodar como a arena do Battlesnake da DevCommunity. Mantém a estrutura e a
 "personalidade editorial" que o site já tinha (papel claro, hairlines, dados
 em mono) — só troca a paleta pink por azul marinho + vermelho, cabeia o logo,
 e adiciona uma camada pequena de interatividade.

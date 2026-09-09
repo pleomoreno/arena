@@ -570,7 +570,7 @@ async fn root_page(
     ))
 }
 
-/// Decorative 11×11 board for the logged-out hero — Mauá Dev blue vs. red,
+/// Decorative 11×11 board for the logged-out hero — DevCommunity blue vs. red,
 /// intentionally dark-framed in both themes (hardcoded to match the panel).
 fn home_board() -> Markup {
     const N: usize = 11;

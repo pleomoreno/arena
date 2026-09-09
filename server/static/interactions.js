@@ -1,4 +1,4 @@
-// Battlesnake Arena — Mauá Dev
+// Battlesnake Arena — DevCommunity
 // Small, restrained interaction layer on top of the server-rendered pages:
 //   - [data-reveal]   fades/lifts an element in once it enters the viewport
 //   - [data-count]    counts a number up to its target once visible

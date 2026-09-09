@@ -114,9 +114,9 @@ impl Page {
     fn wordmark(&self) -> Markup {
         html! {
             a class="wordmark" href="/" aria-label="Battlesnake Arena — home" {
-                img class="logo-mark" src=(asset_url("mauadev-logo.svg")) width="28" height="28" alt="Dev Community Mauá";
+                img class="logo-mark" src=(asset_url("mauadev-logo.svg")) width="28" height="28" alt="DevCommunity";
                 span class="wordmark-text" { "Battlesnake" }
-                span class="event-tag" { "Arena · Mauá Dev" }
+                span class="event-tag" { "Arena · DevCommunity" }
             }
         }
     }
@@ -221,7 +221,7 @@ impl Page {
             footer class="site-footer" {
                 div class="inner" {
                     span { "Battlesnake Arena" }
-                    span class="credit" { "hosted by Dev Community Mauá" }
+                    span class="credit" { "hosted by DevCommunity" }
                     div class="spacer" {}
                     a href="/conduct" { "Code of Conduct" }
                     a href="/privacy" { "Privacy Policy" }
